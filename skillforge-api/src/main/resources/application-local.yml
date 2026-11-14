@@ -1,0 +1,4 @@
+# Profilul local: MongoDB din compose.yml și o cheie de dezvoltare, care nu protejează nimic real.
+#   ./gradlew :skillforge-api:bootRun --args='--spring.profiles.active=local'
+skillforge:
+  api-key: local-dev-key

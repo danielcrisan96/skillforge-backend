@@ -1,0 +1,9 @@
+# Profilul cloud: baza de date în MongoDB Atlas. Toate valorile vin din mediu; parola nu se scrie niciodată într-un
+# fișier.
+spring:
+  mongodb:
+    protocol: mongodb+srv
+    host: ${MONGODB_HOST}
+    username: ${MONGODB_USERNAME}
+    password: ${MONGODB_PASSWORD}
+    database: ${MONGODB_DATABASE:skillforge}

@@ -1,0 +1,99 @@
+### Cereri de probă pentru skillforge-api, rulat local cu profilul „local”.
+### IntelliJ IDEA Ultimate le rulează direct; în VS Code, cu extensia REST Client.
+@baseUrl = http://localhost:8090
+@apiKey = local-dev-key
+@userId = github:1
+
+### Sănătate (fără cheie)
+GET {{baseUrl}}/actuator/health
+
+### Fără cheie: 401
+GET {{baseUrl}}/conversations
+X-User-Id: {{userId}}
+
+### Salvează profilul (prima salvare creează utilizatorul)
+PUT {{baseUrl}}/users/me/profile
+X-Api-Key: {{apiKey}}
+X-User-Id: {{userId}}
+Content-Type: application/json
+
+{
+  "name": "Ana",
+  "stack": "C#, SQL",
+  "skills": [
+    { "name": "React", "level": "începător" },
+    { "name": "SQL", "level": "avansat" }
+  ],
+  "goal": "AI Engineer"
+}
+
+### Citește profilul
+GET {{baseUrl}}/users/me/profile
+X-Api-Key: {{apiKey}}
+X-User-Id: {{userId}}
+
+### Prima salvare a unei conversații (fără version)
+PUT {{baseUrl}}/conversations/c-demo-1
+X-Api-Key: {{apiKey}}
+X-User-Id: {{userId}}
+Content-Type: application/json
+
+{
+  "title": "Ce-mi lipsește pentru AI Engineer",
+  "createdAt": "2026-11-14T10:00:00.000Z",
+  "messages": [
+    { "id": "m1", "role": "user", "parts": [ { "type": "text", "text": "Ce-mi lipsește?" } ] },
+    {
+      "id": "m2",
+      "role": "assistant",
+      "parts": [ { "type": "text", "text": "Trei lucruri..." } ],
+      "metadata": {
+        "providerId": "anthropic",
+        "modelId": "claude-haiku-4-5",
+        "pricing": { "inputPerMillionUsd": 1.0, "outputPerMillionUsd": 5.0, "verifiedAt": "2026-09-16" },
+        "usage": { "inputTokens": 820, "outputTokens": 310 },
+        "source": "model"
+      }
+    }
+  ]
+}
+
+### A doua salvare, cu versiunea primită mai sus (0). Trimisă de două ori, a doua oară răspunde 409.
+PUT {{baseUrl}}/conversations/c-demo-1
+X-Api-Key: {{apiKey}}
+X-User-Id: {{userId}}
+Content-Type: application/json
+
+{
+  "title": "Ce-mi lipsește pentru AI Engineer",
+  "version": 0,
+  "messages": [
+    { "id": "m1", "role": "user", "parts": [ { "type": "text", "text": "Ce-mi lipsește?" } ] },
+    { "id": "m3", "role": "user", "parts": [ { "type": "text", "text": "De unde încep?" } ] }
+  ]
+}
+
+### Lista conversațiilor
+GET {{baseUrl}}/conversations
+X-Api-Key: {{apiKey}}
+X-User-Id: {{userId}}
+
+### Conversația altui utilizator: 404
+GET {{baseUrl}}/conversations/c-demo-1
+X-Api-Key: {{apiKey}}
+X-User-Id: github:2
+
+### Consumul pe model
+GET {{baseUrl}}/usage
+X-Api-Key: {{apiKey}}
+X-User-Id: {{userId}}
+
+### Șterge o conversație
+DELETE {{baseUrl}}/conversations/c-demo-1
+X-Api-Key: {{apiKey}}
+X-User-Id: {{userId}}
+
+### Șterge contul: profilul și toate conversațiile
+DELETE {{baseUrl}}/users/me
+X-Api-Key: {{apiKey}}
+X-User-Id: {{userId}}

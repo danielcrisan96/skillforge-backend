@@ -1,0 +1,36 @@
+# Tot backend-ul, cu o singură comandă: docker compose up --build
+# Doar baza de date, ca să rulezi serviciul din IntelliJ sau cu Gradle: docker compose up -d mongodb
+services:
+  mongodb:
+    image: mongo:8.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: [ "CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  skillforge-api:
+    build:
+      context: .
+      args:
+        SERVICE: skillforge-api
+        PORT: 8090
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_MONGODB_HOST: mongodb
+    ports:
+      - "8090:8090"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
+volumes:
+  mongodb-data:

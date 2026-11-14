@@ -1,0 +1,8 @@
+*
+!gradlew
+!gradle/
+!settings.gradle.kts
+!build.gradle.kts
+!skillforge-api/
+**/build/
+**/.gradle/
