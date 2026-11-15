@@ -35,7 +35,9 @@ public class ApiKeyFilter extends OncePerRequestFilter {
     public static final String USER_ID_HEADER = "X-User-Id";
 
     // Sănătatea e întrebată de Docker și de Cloud Run, care nu au cheia; documentația nu conține date.
-    private static final List<String> OPEN_PATHS = List.of("/actuator/", "/swagger-ui", "/v3/api-docs");
+    // Doar /actuator/health, nu tot /actuator/: info și metrics nu sunt date ale utilizatorilor, dar spun ceva
+    // despre serviciu (versiuni, memorie, numărul de cereri), iar pe Cloud Run adresa e publică.
+    private static final List<String> OPEN_PATHS = List.of("/actuator/health", "/swagger-ui", "/v3/api-docs");
 
     private final String apiKey;
 

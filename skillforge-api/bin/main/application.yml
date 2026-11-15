@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: skillforge-api
+  mongodb:
+    database: skillforge
+  mvc:
+    problemdetails:
+      enabled: true
+  data:
+    mongodb:
+      auto-index-creation: true
+  jackson:
+    # Un câmp fără valoare lipsește din JSON, nu apare ca null. Contează pentru consum: în aplicația web, un număr de
+    # tokeni lipsă înseamnă „necunoscut”, iar un null ar ajunge să fie socotit drept zero.
+    default-property-inclusion: non_null
+
+server:
+  port: 8090
+
+skillforge:
+  # Cheia dintre serverul Next.js și acest serviciu. Vine din mediu; fără ea, serviciul răspunde 503 la orice.
+  api-key: ${SKILLFORGE_API_KEY:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # health pentru Docker și Cloud Run; info și metrics pentru noi. Niciodată tot: unele endpoint-uri arată setări.
+        include: health, info, metrics
+  endpoint:
+    health:
+      # /actuator/health/liveness și /readiness, cele două întrebări pe care le pune un orchestrator.
+      probes:
+        enabled: true

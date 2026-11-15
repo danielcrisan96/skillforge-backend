@@ -5,3 +5,11 @@ build/
 .idea/
 *.iml
 out/
+
+# Ieșirea extensiei Java din VS Code (compilatorul Eclipse) și fișierele ei de proiect
+bin/
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
